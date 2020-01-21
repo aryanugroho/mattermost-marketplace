@@ -17,6 +17,8 @@ import (
 
 func init() {
 	generatorCmd.AddCommand(addCmd)
+
+	addCmd.Flags().Bool("beta", false, "Mark release as Beta")
 }
 
 var addCmd = &cobra.Command{
@@ -31,6 +33,11 @@ var addCmd = &cobra.Command{
 		command.SilenceUsage = true
 
 		plugins, err := InitCommand(command)
+		if err != nil {
+			return err
+		}
+
+		beta, err := command.Flags().GetBool("beta")
 		if err != nil {
 			return err
 		}
@@ -73,12 +80,17 @@ var addCmd = &cobra.Command{
 			return errors.Wrap(err, "failed to download plugin signature")
 		}
 
+		labels := []model.Label{}
+		if beta {
+			labels = append(labels, model.BetaLabel)
+		}
+
 		plugin := &model.Plugin{
 			HomepageURL:     manifest.HomepageURL,
 			IconData:        iconData,
 			DownloadURL:     bundleURL,
 			ReleaseNotesURL: "", // Not jet supported
-			Labels:          nil,
+			Labels:          labels,
 			Signature:       signature,
 			Manifest:        manifest,
 			UpdatedAt:       time.Now().In(time.UTC),

@@ -8,9 +8,18 @@ type Label struct {
 	Color       string `json:"color"`
 }
 
+var AllLabels = []Label{OfficialLabel, BetaLabel}
+
 var OfficialLabel Label = Label{
 	Name:        "Official",
 	Description: "This plugin is maintained by Mattermost",
 	URL:         "https://mattermost.com/pl/default-community-plugins",
+	Color:       "#166de0",
+}
+
+var BetaLabel Label = Label{
+	Name:        "Beta",
+	Description: "This plugin is currently in Beta and it's not recommended in production use.",
+	URL:         "https://mattermost.com/pl/default-beta-plugins",
 	Color:       "#166de0",
 }
